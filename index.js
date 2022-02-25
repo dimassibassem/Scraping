@@ -7,17 +7,14 @@ let maxPrice = 2500 // null
 let minPrice = 1500 // null
 
 
-
-const data = params(query,locationId,locations,minPrice,maxPrice).data
-const config = params(query,locationId,locations,minPrice,maxPrice).config
-
-const firstResult = await search(data, config)
+const dataConfig = params(query,locationId,locations,minPrice,maxPrice)
+const firstResult = await search(dataConfig.data, dataConfig.config)
 
 const pages = firstResult.pages
 const hits = firstResult.hits;
 const results = firstResult.results;
 
-console.log(hits);
+console.log("hits: " + hits);
 
 for (let i = 0; i < pages; i++) {
     console.log(`page: ${i}`)
@@ -30,6 +27,6 @@ for (let i = 0; i < pages; i++) {
 }
 
 
-//console.log(results)
+console.log(results)
 console.log(results.length)
 

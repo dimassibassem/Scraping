@@ -71,6 +71,9 @@ export function params(query,locationId,locations,minPrice,maxPrice) {
         },
         data: data
     };
+    if (locationId!= null) {
+    console.log("id: "+locations[locationIndex(locationId)].id+ " is for "+ locations[locationIndex(locationId)].name)
+    }
     return {
         data: data,
         config: config,
