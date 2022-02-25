@@ -1,4 +1,14 @@
 import axios from "axios";
+import {locations} from "./locations.js";
+
+const locationIndex = (locationId)=>{
+    return locations.findIndex(element => {
+        if (element.id === locationId) {
+            return true;
+        }
+    });
+
+}
 
 function numToLetters(e) {
     let t = "";
@@ -10,38 +20,6 @@ function numToLetters(e) {
 export function getOffset(id, timestamp) {
     return numToLetters(id + 99).toUpperCase() + "A" + numToLetters(timestamp - 1420070400).toUpperCase()
 }
-
-export function params(query) {
-    const data = JSON.stringify({
-        "query": query,
-        "location": {
-            "id": null,
-            "name": "",
-            "radius": 10
-        },
-        "filter": {
-            "categoryId": null,
-            "priceMin": null,
-            "priceMax": null,
-            "onlyWithPrice": false
-        },
-        "isUserSearch": true,
-        "isFilterSearch": false
-    });
-    const config = {
-        method: 'post',
-        url: 'https://api.9annas.tn/search',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        data: data
-    };
-    return {
-        data: data,
-        config: config,
-    }
-}
-
 export async function search(data, config) {
     const results = [];
     const response = await axios(config);
@@ -65,26 +43,63 @@ export async function search(data, config) {
     }
 }
 
-export async function searchMore(offset, query) {
-    let data = JSON.stringify({
-        "searchQuery": {
-            "query": query,
-            "location": {
-                "id": null,
-                "name": "",
-                "radius": 10
-            },
-            "filter": {
-                "categoryId": null,
-                "priceMin": null,
-                "priceMax": null,
-                "onlyWithPrice": false
-            },
-            "isUserSearch": true,
-            "isFilterSearch": false
+
+export function params(query,locationId,locations,minPrice,maxPrice) {
+    const data = JSON.stringify({
+        "query": query,
+        "location": {
+            "id": (locationId === null) ? null : locationId,
+            "name": (locationId === null) ? "" : locations[locationIndex(locationId)].name,
+            "radius": 10
         },
-        "offset": offset
+        "filter": {
+            "categoryId": null,
+            "priceMin": (minPrice === null)?null:minPrice,
+            "priceMax": (maxPrice === null)?null:maxPrice,
+            "onlyWithPrice": false
+        },
+        "isUserSearch": true,
+        "isFilterSearch": (locationId !== null) || (minPrice !== null) || (maxPrice !== null)
     });
+
+
+    const config = {
+        method: 'post',
+        url: 'https://api.9annas.tn/search',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        data: data
+    };
+    return {
+        data: data,
+        config: config,
+    }
+}
+
+
+export async function searchMore(offset, query,locationId,locations,minPrice,maxPrice) {
+
+    const data = JSON.stringify({
+            "searchQuery": {
+                "query": query,
+                "location": {
+                    "id": (locationId === null) ? null:locationId,
+                    "name": (locationId === null )?"":locations[locationIndex(locationId)].name ,
+                    "radius": 10
+                },
+                "filter": {
+                    "categoryId": null,
+                    "priceMin": (minPrice === null)?null:minPrice,
+                    "priceMax": (maxPrice === null)?null:maxPrice,
+                    "onlyWithPrice": false
+                },
+                "isUserSearch": true,
+                "isFilterSearch":(locationId !== null) || (minPrice !== null) || (maxPrice !== null)
+            },
+            "offset": offset
+        });
+
 
     let config = {
         method: 'post',
