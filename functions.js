@@ -43,6 +43,19 @@ export async function search(data, config) {
     }
 }
 
+export async function getData() {
+    const res = await axios.get('https://cdn.9annas.tn/data/appdata.json?v=3');
+
+    return res.data
+}
+
+
+export async function getImages(id) {
+    const url = `https://api.9annas.tn/images/?ad=${id}`;
+    console.log(url);
+    const res = await axios.get(url);
+    return res.data
+}
 
 export function params(query,locationId,locations,minPrice,maxPrice) {
     const data = JSON.stringify({
@@ -119,3 +132,7 @@ export async function searchMore(offset, query,locationId,locations,minPrice,max
 
 }
 
+export function decode(e, t) {
+    return e = e.substr(0, t) + String.fromCharCode(e.charCodeAt(t) - t) + e.substr(t + 1),
+        JSON.parse(atob(e))
+}
